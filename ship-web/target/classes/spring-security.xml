@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+	<http pattern="/login.ship" security="none" />
+	<http pattern="/accessDenied.jsp" security="none" />
+
+	<http auto-config="true">
+		<form-login login-page="/login.jsp"
+			authentication-failure-url="/login.jsp" />
+		<custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR" />
+	</http>
+
+	<beans:bean id="myFilter"
+		class="org.ship.web.security.MyFilterSecurityInterceptor">
+		<beans:property name="accessDecisionManager" ref="myAccessDecisionManager" />
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="securityMetadataSource" ref="mySecurityMetadataSource" />
+	</beans:bean>
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="myUserDetailsService">
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean name="myUserDetailsService" class="org.ship.web.security.MyUserDetailsService">
+	</beans:bean>
+
+	<beans:bean name="myAccessDecisionManager"
+		class="org.ship.web.security.MyAccessDecisionManager">
+	</beans:bean>
+
+	<beans:bean name="mySecurityMetadataSource"
+		class="org.ship.web.security.MyInvocationSecurityMetadataSourceService">
+	</beans:bean>
+
+</beans:beans>  
